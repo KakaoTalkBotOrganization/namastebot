@@ -26,79 +26,93 @@ fun between(
 	end: String,
 ) = string.split(begin)[1].split(end)[0]
 
+fun parse_message_from_action(
+	noti: StatusBarNotification,
+	action: Notification.Action,
+	kakaotalk_version: Long,
+): Message? {
+	if (
+		action.remoteInputs == null ||
+		action.remoteInputs.isEmpty() ||
+		!action.title.toString().toLowerCase(Locale.KOREA).contains("reply") &&
+		!action.title.toString().contains("답장")
+	) {
+		return null
+	}
+	val extras = noti.notification.extras
+	var room: String?
+	val sender: String
+	val content: String
+	var is_group_chat = false
+	val package_name = noti.packageName
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+		room = extras.getString("android.summaryText")
+		sender = extras.get("android.title")!!.toString()
+		content = extras.get("android.text")!!.toString()
+		if (room == null) {
+			room = sender
+		}
+		else {
+			is_group_chat = true
+		}
+	}
+	else if (
+		package_name != "com.kakao.talk" ||
+		kakaotalk_version < 1907310
+	) {
+		room = extras.getString("android.title")!!
+		val text = extras.get("android.text")
+		if (text !is String) {
+			val html = HtmlCompat.toHtml(
+				text as Spanned,
+				HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE,
+			)
+			sender = HtmlCompat.fromHtml(
+				between(html, "<b>", "</b>"),
+				HtmlCompat.FROM_HTML_MODE_COMPACT,
+			).toString()
+			content = HtmlCompat.fromHtml(
+				between(html, "</b>", "</p>").substring(1),
+				HtmlCompat.FROM_HTML_MODE_COMPACT,
+			).toString()
+		}
+		else {
+			sender = room
+			content = extras.get("android.text")!!.toString()
+		}
+	}
+	else {
+		room = extras.getString("android.subText")
+		sender = extras.getString("android.title")!!
+		content = extras.getString("android.text")!!
+		if (room == null) {
+			room = sender
+		}
+		else {
+			is_group_chat = true
+		}
+	}
+	/*
+	if (!PictureManager.profileImage.containsKey(room)){
+		PictureManager.profileImage[sender] =
+			sbn.notification.getLargeIcon().toBitmap(context)
+	}
+	*/
+	return Message(action, room, sender, content, is_group_chat, package_name)
+}
+
 fun parse_message_from_notification(
 	noti: StatusBarNotification,
 	kakaotalk_version: Long,
 ): Message? {
+	if (noti.notification.actions != null) {
+		for (action in noti.notification.actions) {
+			return parse_message_from_action(noti, action, kakaotalk_version) ?: continue
+		}
+	}
 	val w_ext = Notification.WearableExtender(noti.notification)
 	for (action in w_ext.actions) {
-		if (
-			action.remoteInputs.isEmpty() ||
-			!action.title.toString().toLowerCase(Locale.KOREA).contains("reply") &&
-			!action.title.toString().contains("답장")
-		) {
-			continue
-		}
-		val extras = noti.notification.extras
-		var room: String?
-		val sender: String
-		val content: String
-		var is_group_chat = false
-		val package_name = noti.packageName
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			room = extras.getString("android.summaryText")
-			sender = extras.get("android.title")!!.toString()
-			content = extras.get("android.text")!!.toString()
-			if (room == null) {
-				room = sender
-			}
-			else {
-				is_group_chat = true
-			}
-		}
-		else if (
-			package_name != "com.kakao.talk" ||
-			kakaotalk_version < 1907310
-		) {
-			room = extras.getString("android.title")!!
-			val text = extras.get("android.text")
-			if (text !is String) {
-				val html = HtmlCompat.toHtml(
-					text as Spanned,
-					HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE,
-				)
-				sender = HtmlCompat.fromHtml(
-					between(html, "<b>", "</b>"),
-					HtmlCompat.FROM_HTML_MODE_COMPACT,
-				).toString()
-				content = HtmlCompat.fromHtml(
-					between(html, "</b>", "</p>").substring(1),
-					HtmlCompat.FROM_HTML_MODE_COMPACT,
-				).toString()
-			}
-			else {
-				sender = room
-				content = extras.get("android.text")!!.toString()
-			}
-		}
-		else {
-			room = extras.getString("android.subText")
-			sender = extras.getString("android.title")!!
-			content = extras.getString("android.text")!!
-			if (room == null) {
-				room = sender
-			}
-			else {
-				is_group_chat = true
-			}
-		}
-		/*
-		if (!PictureManager.profileImage.containsKey(room)){
-			PictureManager.profileImage[sender] =
-				sbn.notification.getLargeIcon().toBitmap(context)
-		}
-		*/
-		return Message(action, room, content, sender, is_group_chat, package_name)
+		return parse_message_from_action(noti, action, kakaotalk_version) ?: continue
 	}
 	return null
 }
