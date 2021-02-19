@@ -4,7 +4,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import androidx.core.content.pm.PackageInfoCompat
 
-class NotificationListenerService : NotificationListenerService() {
+class NBNotificationListenerService : NotificationListenerService() {
 
 	var kakaotalk_version: Long = 0
 
@@ -14,7 +14,8 @@ class NotificationListenerService : NotificationListenerService() {
 			kakaotalk_version = PackageInfoCompat.getLongVersionCode(
 				packageManager.getPackageInfo("com.kakao.talk", 0)
 			)
-		} catch (_: Exception) {
+		}
+		catch (_: Exception) {
 		}
 	}
 
