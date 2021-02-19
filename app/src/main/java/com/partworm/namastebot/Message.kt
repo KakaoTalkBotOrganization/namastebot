@@ -32,10 +32,9 @@ fun parse_message_from_notification(
 ): Message? {
 	val w_ext = Notification.WearableExtender(noti.notification)
 	for (action in w_ext.actions) {
-		if (action.remoteInputs.isEmpty()) {
-			continue
-		}
-		if (!action.title.toString().toLowerCase(Locale.KOREA).contains("reply") &&
+		if (
+			action.remoteInputs.isEmpty() ||
+			!action.title.toString().toLowerCase(Locale.KOREA).contains("reply") &&
 			!action.title.toString().contains("답장")
 		) {
 			continue
@@ -52,41 +51,45 @@ fun parse_message_from_notification(
 			content = extras.get("android.text")!!.toString()
 			if (room == null) {
 				room = sender
-			} else {
+			}
+			else {
 				is_group_chat = true
 			}
-		} else {
-			if (package_name != "com.kakao.talk" ||
-				kakaotalk_version < 1907310
-			) {
-				room = extras.getString("android.title")!!
-				val text = extras.get("android.text")
-				if (text !is String) {
-					val html = HtmlCompat.toHtml(
-						text as Spanned,
-						HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE,
-					)
-					sender = HtmlCompat.fromHtml(
-						between(html, "<b>", "</b>"),
-						HtmlCompat.FROM_HTML_MODE_COMPACT,
-					).toString()
-					content = HtmlCompat.fromHtml(
-						between(html, "</b>", "</p>").substring(1),
-						HtmlCompat.FROM_HTML_MODE_COMPACT,
-					).toString()
-				} else {
-					sender = room
-					content = extras.get("android.text")!!.toString()
-				}
-			} else {
-				room = extras.getString("android.subText")
-				sender = extras.getString("android.title")!!
-				content = extras.getString("android.text")!!
-				if (room == null) {
-					room = sender
-				} else {
-					is_group_chat = true
-				}
+		}
+		else if (
+			package_name != "com.kakao.talk" ||
+			kakaotalk_version < 1907310
+		) {
+			room = extras.getString("android.title")!!
+			val text = extras.get("android.text")
+			if (text !is String) {
+				val html = HtmlCompat.toHtml(
+					text as Spanned,
+					HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE,
+				)
+				sender = HtmlCompat.fromHtml(
+					between(html, "<b>", "</b>"),
+					HtmlCompat.FROM_HTML_MODE_COMPACT,
+				).toString()
+				content = HtmlCompat.fromHtml(
+					between(html, "</b>", "</p>").substring(1),
+					HtmlCompat.FROM_HTML_MODE_COMPACT,
+				).toString()
+			}
+			else {
+				sender = room
+				content = extras.get("android.text")!!.toString()
+			}
+		}
+		else {
+			room = extras.getString("android.subText")
+			sender = extras.getString("android.title")!!
+			content = extras.getString("android.text")!!
+			if (room == null) {
+				room = sender
+			}
+			else {
+				is_group_chat = true
 			}
 		}
 		/*
@@ -106,10 +109,10 @@ fun send_to_session(
 	content: String,
 ) {
 	val intent = Intent()
-	val msg = Bundle()
+	val bundle = Bundle()
 	for (inputable in session.remoteInputs) {
-		msg.putCharSequence(inputable.resultKey, content)
+		bundle.putCharSequence(inputable.resultKey, content)
 	}
-	RemoteInput.addResultsToIntent(session.remoteInputs, intent, msg)
+	RemoteInput.addResultsToIntent(session.remoteInputs, intent, bundle)
 	session.actionIntent.send(context, 0, intent)
 }
