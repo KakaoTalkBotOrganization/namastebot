@@ -14,5 +14,7 @@
 	<string name="toggle_bot_power">Toggle namastebot\'s power</string>
 	<string name="open_log">Open log</string>
 	<string name="settings">Settings</string>
+	<string name="empty_bots">No bots</string>
+	<string name="tap_plus_to_add_bot">\'+\'를 눌러\n봇을 추가하세요.</string>
 
 </resources>

@@ -8,6 +8,43 @@
 	tools:context=".HomeActivity"
 	>
 
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		>
+
+		<ImageView
+			android:id="@+id/no_bots_image"
+			android:layout_width="160dp"
+			android:layout_height="320dp"
+			android:alpha="0.8"
+			android:contentDescription="@string/empty_bots"
+			android:scaleType="centerInside"
+			android:src="@drawable/krishna_grayscale"
+			app:layout_constraintBottom_toTopOf="@+id/no_bots_caption"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintVertical_chainStyle="packed"
+			/>
+
+		<TextView
+			android:id="@+id/no_bots_caption"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="24dp"
+			android:text="@string/tap_plus_to_add_bot"
+			android:textAlignment="center"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/no_bots_image"
+			/>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
 	<androidx.recyclerview.widget.RecyclerView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -18,7 +55,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
-		app:backgroundTint="@color/app_surface"
+		app:backgroundTint="?colorSurface"
 		app:fabAlignmentMode="end"
 		app:menu="@menu/menu_home"
 		/>
@@ -28,9 +65,9 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:src="@drawable/ic_outline_add_24"
-		app:backgroundTint="@color/app_primary"
-		app:tint="@color/app_on_primary"
-		app:rippleColor="@color/app_on_primary"
+		app:backgroundTint="?colorPrimary"
+		app:tint="?colorOnPrimary"
+		app:rippleColor="?colorOnPrimary"
 		app:layout_anchor="@id/bar"
 		android:contentDescription="@string/add_script"
 		/>
