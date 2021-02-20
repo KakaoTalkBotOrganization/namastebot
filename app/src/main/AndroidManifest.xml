@@ -12,18 +12,17 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.Namastebot"
 		>
-		<!--
+
 		<activity
-			android:name=".MainActivity"
+			android:name=".HomeActivity"
 			android:label="@string/app_name"
-			android:theme="@style/Theme.Namastebot.NoActionBar">
+			android:theme="@style/Theme.Namastebot"
+			>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		-->
 
 		<service
 			android:name=".NBNotificationListenerService"

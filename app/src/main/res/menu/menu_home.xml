@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	>
+
+	<item
+		android:id="@+id/switch_toggle_power"
+		android:title="@string/toggle_bot_power"
+		app:actionLayout="@layout/switch_item"
+		app:showAsAction="always"
+		/>
+
+	<item
+		android:id="@+id/open_settings"
+		android:icon="@drawable/ic_outline_settings_24"
+		android:title="@string/settings"
+		app:showAsAction="always"
+		/>
+
+	<item
+		android:id="@+id/open_log"
+		android:icon="@drawable/ic_outline_receipt_24"
+		android:title="@string/open_log"
+		app:showAsAction="always"
+		/>
+
+</menu>

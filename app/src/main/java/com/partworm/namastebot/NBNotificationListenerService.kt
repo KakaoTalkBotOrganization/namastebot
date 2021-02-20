@@ -20,7 +20,12 @@ class NBNotificationListenerService : NotificationListenerService() {
 		}
 		catch (_: Exception) {
 		}
-		bot = Bot(this)
+		try {
+			bot = Bot(this)
+		}
+		catch (exception: Exception) {
+			exception.printStackTrace()
+		}
 	}
 
 	override fun onNotificationPosted(noti: StatusBarNotification) {
@@ -37,7 +42,7 @@ class NBNotificationListenerService : NotificationListenerService() {
 		if (message.sender != debug_sender) {
 			return
 		}
-		bot?.execute(message.action)
+		bot?.offer_message(message)
 	}
 
 }

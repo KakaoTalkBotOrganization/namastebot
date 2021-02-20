@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".HomeActivity"
+	>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		/>
+
+	<com.google.android.material.bottomappbar.BottomAppBar
+		android:id="@+id/bar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		app:backgroundTint="@color/app_surface"
+		app:fabAlignmentMode="end"
+		app:menu="@menu/menu_home"
+		/>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:id="@+id/fab"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_outline_add_24"
+		app:backgroundTint="@color/app_primary"
+		app:tint="@color/app_on_primary"
+		app:rippleColor="@color/app_on_primary"
+		app:layout_anchor="@id/bar"
+		android:contentDescription="@string/add_script"
+		/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

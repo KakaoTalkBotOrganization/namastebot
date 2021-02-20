@@ -31,18 +31,18 @@ class Bot(private val context: Context) {
 		scope = rhino_context.initStandardObjects()
 		rhino_context.compileString("""
 			function response(replier) {
-				replier.reply("Hello world");
+				make(error(rise);
 			}
 		""".trimIndent(), "", 1, null).exec(rhino_context, scope)
 		responder = scope["response", scope] as? Function
 		RhinoContext.exit()
 	}
 
-	fun execute(session: Notification.Action) {
+	fun offer_message(message: Message) {
 		val rhino_context =
 			RhinoAndroidHelper(context).enterContext()
 				.apply { languageVersion = RhinoContext.VERSION_ES6 }
-		responder?.call(rhino_context, scope, scope, arrayOf(Replier(context, session)))
+		responder?.call(rhino_context, scope, scope, arrayOf(Replier(context, message.action)))
 		RhinoContext.exit()
 	}
 
